@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentinelAI | Threat Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div id="loader-wrapper">
+        <div class="loader-content">
+            <div class="shield-icon">🔐</div>
+            <div class="loading-text">INITIALIZING SENTINEL AI...</div>
+            <div class="loading-bar"><div class="progress"></div></div>
+        </div>
+    </div>
+
+    <div class="dashboard-wrapper" id="main-content">
+        <aside class="sidebar">
+            <div class="logo">SENTINEL<span>AI</span></div>
+            <nav>
+                <a href="/" class="active">🛡️ Intelligence</a>
+                <a href="#">📊 History</a>
+                <a href="#">⚙️ Settings</a>
+            </nav>
+        </aside>
+
+        <main class="main-body">
+            <header class="top-header">
+                <h2>Threat Analysis Center</h2>
+                <div class="status-pill">● System Online</div>
+            </header>
+
+            <div class="dashboard-grid">
+                <div class="card input-zone">
+                    <h3>Security Inputs</h3>
+                    <form method="POST">
+                        <label>URL Scan</label>
+                        <input type="text" name="url" placeholder="https://example.com" autocomplete="off">
+                        
+                        <label style="margin-top: 15px; display: block;">Email Content</label>
+                        <textarea name="email_text" rows="5" placeholder="Paste full email body here..."></textarea>
+                        
+                        <button type="submit" class="btn-primary">Execute Deep Scan</button>
+                    </form>
+                </div>
+
+                <div class="output-zone">
+                    {% if result %}
+                    <div class="result-card">
+                        <div class="badge {{ 'red' if result.score > 70 else 'yellow' if result.score > 40 else 'green' }}">
+                            {{ result.prediction }}
+                        </div>
+                        <div class="score-display">
+                            <span class="score-num">{{ result.score }}%</span>
+                            <span class="score-label">Risk Probability</span>
+                        </div>
+                        
+                        <div class="intel-breakdown">
+                            <h4>🔍 Analysis Flags</h4>
+                            <ul>
+                                {% for flag in result.flags %}
+                                <li><span class="dot"></span> {{ flag }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="meta-footer">
+                            Target: {{ result.target }} | {{ result.time }}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="radar">📡</div>
+                        <p>Awaiting Threat Vector Input...</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // FAIL-SAFE LOADER EXIT
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loader-wrapper').style.opacity = '0';
+                document.getElementById('main-content').style.opacity = '1';
+                setTimeout(() => {
+                    document.getElementById('loader-wrapper').style.display = 'none';
+                }, 500);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
